@@ -533,317 +533,214 @@
 
     <script>
         // =========================================================================
+        // 1. SITE PRESETS, CAMPAIGN SLIDES & TICKER DEFAULTS
+        // =========================================================================
+        const SITE_PRESETS = {
+            'harolds-cross': {
+                name: 'Harold’s Cross',
+                weatherLabel: 'Dublin 6W',
+                lat: 53.3244,
+                lon: -6.2836,
+                defaultEvents: [
+                    { title: 'Light Up A Life Ceremony', detail: 'Sunday, 6th December at 4:15 PM — Harold’s Cross Campus' },
+                    { title: 'Bereavement Grief Café', detail: 'Every Tuesday, 11:00 AM – 12:30 PM — Education & Research Centre' },
+                    { title: 'Christmas Cards & Robin Brooches', detail: 'Available now at Main Reception & online at lightupalife.ie' }
+                ],
+                visitorInfo: [
+                    { icon: 'coffee', label: 'Hospice Café & Shop', value: 'Open Daily: 8:30 AM – 4:30 PM (Main Concourse)' },
+                    { icon: 'wifi', label: 'Complimentary Visitor Wi-Fi', value: 'Network: OLH-Guest — No password required' },
+                    { icon: 'heart-handshake', label: 'Chapel & Quiet Sanctuary', value: 'Open 24/7 for quiet reflection and prayer' }
+                ]
+            },
+            'blackrock': {
+                name: 'Blackrock',
+                weatherLabel: 'Blackrock, Dublin',
+                lat: 53.3015,
+                lon: -6.1778,
+                defaultEvents: [
+                    { title: 'Blackrock Bereavement Grief Café', detail: 'First Wednesday of each month, 10:30 AM — Blackrock Hospice' },
+                    { title: 'Light Up A Life Remembrance', detail: 'Sponsor a light online at lightupalife.ie or at Reception' },
+                    { title: 'Volunteer Opportunities', detail: 'Join our Blackrock community & reception volunteer team' }
+                ],
+                visitorInfo: [
+                    { icon: 'clock', label: 'Visiting Hours', value: 'Flexible family visiting — Please check in at Main Reception' },
+                    { icon: 'wifi', label: 'Complimentary Visitor Wi-Fi', value: 'Network: OLH-Guest — Free access for families' },
+                    { icon: 'car', label: 'Parking & Transport', value: 'Visitor spaces on Sweetman’s Avenue & DART (Blackrock)' }
+                ]
+            },
+            'wicklow': {
+                name: 'Wicklow',
+                weatherLabel: 'Magheramore, Wicklow',
+                lat: 52.9367,
+                lon: -6.0289,
+                defaultEvents: [
+                    { title: 'Wicklow Hospice Half Marathon & 10km', detail: 'Saturday, 20th February 2027 — Avondale Forest Park, Rathdrum' },
+                    { title: 'Wicklow Grief Café Support', detail: 'Monthly drop-in support for families across Co. Wicklow' },
+                    { title: 'Light Up A Life — County Wicklow', detail: 'Dedicate a light in memory of a loved one at lightupalife.ie' }
+                ],
+                visitorInfo: [
+                    { icon: 'coffee', label: 'Family Lounge & Refreshments', value: 'Tea & coffee facilities available for visitors all day' },
+                    { icon: 'wifi', label: 'Complimentary Visitor Wi-Fi', value: 'Network: OLH-Guest — Free access throughout the hospice' },
+                    { icon: 'compass', label: 'Gardens & Coastal Grounds', value: 'Peaceful courtyard gardens open to patients & families' }
+                ]
+            }
+        };
+
+        const DEFAULT_TICKER_LINES = [
+            'Light Up A Life 2026: Sponsor a light on our Christmas tree in memory of someone special at lightupalife.ie or call 01 491 1072.',
+            'Bereaved Children’s Awareness Week (16th – 22nd November): Specialist bereavement resources and family support available via our Social Work team.',
+            'Christmas Cards & Robin Brooches are now available at Main Reception — every purchase directly supports compassionate hospice care.',
+            'Hand Hygiene Reminder: Please use the sanitising stations provided when entering and leaving clinical wards.',
+            'Registration is now open for the 2027 Wicklow Hospice Half Marathon & 10km in Avondale Forest Park — sign up at olh.ie/events.'
+        ];
+
+        const DEMO_SLIDES = [
+            {
+                badge: 'Flagship Campaign',
+                tag: 'Light Up A Life 2026',
+                title: 'Shine a Light for Someone Special This Christmas',
+                subtitle: 'Sponsor a light on our remembrance tree in memory of a loved one, or as a meaningful festive gift supporting hospice care across Harold’s Cross, Blackrock & Wicklow.',
+                cta: 'Visit lightupalife.ie or call 01 491 1072',
+                lowerThird: 'Light Up A Life 2026 — Sponsor a light online at lightupalife.ie',
+                icon: 'sparkles',
+                bgGradient: 'from-[#1B2A4A] via-[#223863] to-[#111C33]',
+                accentColor: '#D83A76'
+            },
+            {
+                badge: 'Awareness Week',
+                tag: '16th – 22nd November',
+                title: 'Bereaved Children’s Awareness Week',
+                subtitle: 'Supporting children, young people, and families navigating grief. Speak with our Social Work & Bereavement Support teams for guidance and resources.',
+                cta: 'Ask at Reception or visit olh.ie/bereavement',
+                lowerThird: 'Bereaved Children’s Awareness Week — Specialist family & youth support available',
+                icon: 'heart-handshake',
+                bgGradient: 'from-[#16324F] via-[#1B4965] to-[#111C33]',
+                accentColor: '#4A90D9'
+            },
+            {
+                badge: 'Festive Retail',
+                tag: 'Christmas Cards & Brooches',
+                title: 'Wear a Symbol of Love & Remembrance',
+                subtitle: 'Our 2026 Christmas card packs and signature Robin Brooches are available at Reception and online — 100% of proceeds support patient care.',
+                cta: 'Pick up at Reception or order at lightupalife.ie',
+                lowerThird: 'Christmas Cards & Robin Brooches available now at Main Reception',
+                icon: 'gift',
+                bgGradient: 'from-[#2A1B3D] via-[#1B2A4A] to-[#111C33]',
+                accentColor: '#D83A76'
+            },
+            {
+                badge: 'Community & Events',
+                tag: 'Saturday 20th Feb 2027',
+                title: 'Wicklow Hospice Half Marathon & 10km',
+                subtitle: 'Join us in scenic Avondale Forest Park, Rathdrum. Open to runners and walkers of all levels raising vital funds for Wicklow Hospice services.',
+                cta: 'Register early at olh.ie/events',
+                lowerThird: 'Registration Open: Wicklow Hospice Half Marathon & 10km at Avondale Forest Park',
+                icon: 'trophy',
+                bgGradient: 'from-[#1B2A4A] via-[#1E3F66] to-[#0F2038]',
+                accentColor: '#4A90D9'
+            }
+        ];
+
+        // =========================================================================
         // 2. APPLICATION STATE & LOCALSTORAGE PERSISTENCE
         // =========================================================================
         const STORAGE_KEY = 'olh_signage_config_v2';
+        const SLIDE_INTERVAL_MS = 12000;
 
-        // Baked-in default configuration (updated automatically when exporting index.html)
-        const BAKED_DEFAULT_CONFIG = /*BAKED_CONFIG_START*/{
+        // Baked-in default configuration (overwritten cleanly when exporting HTML)
+        const BAKED_CONFIG = {
             site: 'harolds-cross',
             logoSrc: '',
             logoSize: 'md',
             embedUrl: '',
             tickerBadge: 'Hospice Updates',
-            tickerLines: [...DEFAULT_TICKER_LINES],
+            tickerLines: null,
             qrUrl: 'https://lightupalife.ie?utm_source=onsite_screens',
             qrHeadline: 'Sponsor a Light Online',
             qrBadge: 'Light Up A Life',
             customEvents: null
-        }/*BAKED_CONFIG_END*/;
+        };
 
-        let appState = { ...BAKED_DEFAULT_CONFIG };
+        let appState = loadAppState();
+        let currentSlideIndex = 0;
+        let slideTimer = null;
+        let isPlaying = true;
+        let idleTimer = null;
 
-        function loadState() {
+        function loadAppState() {
             try {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    appState = { ...BAKED_DEFAULT_CONFIG, ...parsed };
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return Object.assign({}, BAKED_CONFIG, parsed);
                 }
             } catch (e) {
-                console.warn('Could not load saved signage state:', e);
+                console.warn('Could not read saved signage state:', e);
             }
+            return Object.assign({}, BAKED_CONFIG);
         }
 
-        function saveState() {
+        function persistAppState() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
             } catch (e) {
-                console.warn('Could not save signage state:', e);
+                console.warn('Could not save signage state to localStorage:', e);
             }
         }
 
-        async function syncCloudFeedNow() {
-            const feedUrl = document.getElementById('input-cloud-feed-url').value.trim();
-            appState.cloudFeedUrl = feedUrl;
-            saveState();
-
-            if (!feedUrl) {
-                showToast('Cloud feed URL cleared');
-                return;
-            }
-
-            showToast('Syncing with cloud JSON feed...');
-            try {
-                const response = await fetch(feedUrl);
-                if (!response.ok) throw new Error('Failed to fetch remote feed');
-                const remoteData = await response.json();
-                
-                // Merge remote config if valid
-                if (remoteData) {
-                    appState = { ...appState, ...remoteData };
-                    saveState();
-                    renderStage();
-                    renderSidebarAndTicker();
-                    showToast('Successfully synced from cloud feed!');
-                }
-            } catch (err) {
-                console.warn('Cloud sync error:', err);
-                showToast('Cloud sync failed. Check URL or CORS.');
-            }
+        function showToast(message) {
+            const toast = document.getElementById('toast-msg');
+            const text = document.getElementById('toast-text');
+            if (!toast || !text) return;
+            text.textContent = message;
+            toast.classList.remove('opacity-0');
+            clearTimeout(toast._hideTimeout);
+            toast._hideTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 3000);
         }
 
         // =========================================================================
-        // 3. LIVE CLOCK & DATE ENGINE (FLUID SECOND-BY-SECOND UPDATE)
+        // 3. TOP-LEFT LOGO RENDERING & UPLOAD HANDLERS
         // =========================================================================
-        function updateClockAndDate() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-
-            document.getElementById('live-clock-hm').textContent = `${hours}:${minutes}`;
-            document.getElementById('live-clock-sec').textContent = `:${seconds}`;
-
-            const dateOptions = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
-            document.getElementById('live-date').textContent = now.toLocaleDateString('en-IE', dateOptions);
-        }
-
-        // =========================================================================
-        // 4. LIVE WEATHER ENGINE (OPEN-METEO API WITH GRACEFUL FALLBACK)
-        // =========================================================================
-        function mapWeatherCode(code) {
-            if (code === 0) return { desc: 'Clear Sky', icon: 'sun' };
-            if (code >= 1 && code <= 3) return { desc: 'Partly Cloudy', icon: 'cloud-sun' };
-            if (code === 45 || code === 48) return { desc: 'Mist / Fog', icon: 'cloud-fog' };
-            if (code >= 51 && code <= 67) return { desc: 'Light Rain', icon: 'cloud-rain' };
-            if (code >= 71 && code <= 77) return { desc: 'Wintry Showers', icon: 'cloud-snow' };
-            if (code >= 80 && code <= 82) return { desc: 'Passing Showers', icon: 'cloud-drizzle' };
-            if (code >= 95) return { desc: 'Thunderstorms', icon: 'cloud-lightning' };
-            return { desc: 'Overcast', icon: 'cloud' };
-        }
-
-        async function fetchLiveWeather() {
-            const preset = SITE_PRESETS[appState.site] || SITE_PRESETS['harolds-cross'];
-            document.getElementById('weather-loc').textContent = preset.weatherLabel;
-
-            try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${preset.lat}&longitude=${preset.lon}&current=temperature_2m,weather_code&timezone=Europe%2FDublin`;
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Weather API unavailable');
-                const data = await response.json();
-
-                if (data && data.current) {
-                    const temp = Math.round(data.current.temperature_2m);
-                    const info = mapWeatherCode(data.current.weather_code);
-                    document.getElementById('weather-temp').textContent = `${temp}°C`;
-                    document.getElementById('weather-desc').textContent = info.desc;
-                    document.getElementById('weather-icon-box').innerHTML = `<i data-lucide="${info.icon}" class="w-7 h-7"></i>`;
-                    lucide.createIcons();
-                }
-            } catch (err) {
-                // Graceful fallback for offline environments
-                document.getElementById('weather-temp').textContent = appState.site === 'wicklow' ? '10°C' : '11°C';
-                document.getElementById('weather-desc').textContent = 'Crisp & Breezy';
-                document.getElementById('weather-icon-box').innerHTML = `<i data-lucide="cloud-sun" class="w-7 h-7"></i>`;
-                lucide.createIcons();
-            }
-        }
-
-        // =========================================================================
-        // 5. MAIN PRESENTATION STAGE (DEMO SLIDESHOW + LIVE IFRAME EMBED)
-        // =========================================================================
-        let currentSlideIndex = 0;
-        let isPlaying = true;
-        let slideTimer = null;
-        const SLIDE_INTERVAL_MS = 12000;
-
-        function renderStage() {
-            const demoContainer = document.getElementById('demo-slideshow');
-            const embedContainer = document.getElementById('embed-container');
-            const embedFrame = document.getElementById('external-embed-frame');
-            const controls = document.getElementById('slideshow-controls');
-            const dotsContainer = document.getElementById('slide-dots');
-
-            if (appState.embedUrl && appState.embedUrl.trim() !== '') {
-                // External Live Embed Mode (PowerPoint Online / Canva / Google Slides)
-                demoContainer.classList.add('hidden');
-                controls.classList.add('hidden');
-                dotsContainer.classList.add('hidden');
-                embedContainer.classList.remove('hidden');
-
-                if (embedFrame.src !== appState.embedUrl) {
-                    embedFrame.src = appState.embedUrl;
-                }
-
-                document.getElementById('stage-badge-text').textContent = 'Live Presentation Feed';
-                document.getElementById('stage-lower-third').textContent = `Our Lady’s Hospice & Care Services — ${SITE_PRESETS[appState.site].name} Information Screen`;
-                clearInterval(slideTimer);
-                document.getElementById('slide-progress-bar').style.width = '100%';
-            } else {
-                // Built-In Broadcast Slideshow Mode
-                embedContainer.classList.add('hidden');
-                embedFrame.src = '';
-                demoContainer.classList.remove('hidden');
-                controls.classList.remove('hidden');
-                dotsContainer.classList.remove('hidden');
-
-                renderCurrentDemoSlide();
-                startSlideTimer();
-            }
-        }
-
-        function renderCurrentDemoSlide() {
-            const slide = DEMO_SLIDES[currentSlideIndex];
-            const demoContainer = document.getElementById('demo-slideshow');
-
-            demoContainer.innerHTML = `
-                <div class="slide-active w-full h-full bg-gradient-to-br ${slide.bgGradient} text-white p-6 sm:p-10 lg:p-12 flex flex-col justify-between relative overflow-hidden">
-                    <!-- Decorative OLH Inspired Curve Watermark -->
-                    <svg viewBox="0 0 400 220" class="absolute bottom-0 left-0 w-72 sm:w-96 opacity-25 pointer-events-none">
-                        <path d="M0,220 C90,210 150,180 230,220 L0,220 Z" fill="#4A90D9"/>
-                        <path d="M0,120 C55,185 120,175 170,220 L0,220 Z" fill="#111C33"/>
-                        <path d="M0,75 C65,145 130,135 180,205 C135,155 65,155 0,105 Z" fill="#D83A76"/>
-                    </svg>
-
-                    <!-- Top Spacing & Tag -->
-                    <div class="pt-7 sm:pt-8 z-10">
-                        <span class="inline-block px-3.5 py-1 rounded-full text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white shadow-sm" style="background-color: ${slide.accentColor}">
-                            ${slide.tag}
-                        </span>
-                    </div>
-
-                    <!-- Center Hero Copy -->
-                    <div class="my-auto max-w-3xl z-10 py-3">
-                        <h2 class="text-2xl sm:text-4xl xl:text-5xl font-black tracking-tight leading-[1.12] text-white drop-shadow-sm">
-                            ${slide.title}
-                        </h2>
-                        <p class="mt-3 sm:mt-4 text-sm sm:text-lg xl:text-xl text-blue-100/95 font-medium leading-relaxed max-w-2xl">
-                            ${slide.subtitle}
-                        </p>
-                    </div>
-
-                    <!-- Bottom Call-to-Action Pill -->
-                    <div class="z-10 flex items-center justify-between pt-2">
-                        <div class="inline-flex items-center space-x-2.5 bg-white/15 backdrop-blur-md border border-white/20 px-4 py-2 rounded-xl">
-                            <i data-lucide="${slide.icon}" class="w-5 h-5 text-[#4A90D9]"></i>
-                            <span class="text-xs sm:text-sm font-extrabold tracking-wide text-white">${slide.cta}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Update Stage Badge & Lower Third
-            document.getElementById('stage-badge-text').textContent = slide.badge;
-            document.getElementById('stage-lower-third').textContent = slide.lowerThird;
-
-            // Update Dots
-            const dotsContainer = document.getElementById('slide-dots');
-            dotsContainer.innerHTML = DEMO_SLIDES.map((_, idx) => `
-                <button onclick="goToSlide(${idx})" class="h-2 rounded-full transition-all ${idx === currentSlideIndex ? 'w-6 bg-[#D83A76]' : 'w-2 bg-white/35 hover:bg-white/60'}"></button>
-            `).join('');
-
-            // Restart Progress Bar Animation
-            const progressBar = document.getElementById('slide-progress-bar');
-            progressBar.classList.remove('progress-anim');
-            void progressBar.offsetWidth; // trigger reflow
-            if (isPlaying) {
-                progressBar.classList.add('progress-anim');
-            }
-
-            lucide.createIcons();
-        }
-
-        function startSlideTimer() {
-            clearInterval(slideTimer);
-            if (!isPlaying || (appState.embedUrl && appState.embedUrl.trim() !== '')) return;
-            slideTimer = setInterval(() => {
-                nextSlide();
-            }, SLIDE_INTERVAL_MS);
-        }
-
-        function nextSlide() {
-            currentSlideIndex = (currentSlideIndex + 1) % DEMO_SLIDES.length;
-            renderCurrentDemoSlide();
-        }
-
-        function prevSlide() {
-            currentSlideIndex = (currentSlideIndex - 1 + DEMO_SLIDES.length) % DEMO_SLIDES.length;
-            renderCurrentDemoSlide();
-            startSlideTimer();
-        }
-
-        function goToSlide(index) {
-            currentSlideIndex = index;
-            renderCurrentDemoSlide();
-            startSlideTimer();
-        }
-
-        function togglePlayPause() {
-            isPlaying = !isPlaying;
-            const btn = document.getElementById('play-pause-btn');
-            const progressBar = document.getElementById('slide-progress-bar');
-            if (isPlaying) {
-                btn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i>`;
-                progressBar.classList.add('progress-anim');
-                startSlideTimer();
-            } else {
-                btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i>`;
-                progressBar.classList.remove('progress-anim');
-                clearInterval(slideTimer);
-            }
-            lucide.createIcons();
-        }
-
-        // =========================================================================
-        // 6. SIDEBAR, LOGO, QR CODE & TICKER RENDERING
-        // =========================================================================
-        function renderHeaderLogo() {
+        function applyLogoState() {
             const imgEl = document.getElementById('header-custom-logo');
             const fallbackEl = document.getElementById('header-fallback-logo');
             const removeBtn = document.getElementById('btn-remove-logo');
 
             const sizeClasses = {
-                sm: 'h-6',
-                md: 'h-8',
-                lg: 'h-10'
+                sm: 'h-7',
+                md: 'h-9',
+                lg: 'h-11'
             };
 
-            // Reset height classes
-            imgEl.classList.remove('h-6', 'h-8', 'h-10');
-            imgEl.classList.add(sizeClasses[appState.logoSize] || 'h-8');
-
-            // Highlight active size button in drawer
-            document.querySelectorAll('.logo-size-btn').forEach(btn => {
-                btn.classList.remove('bg-[#1B2A4A]', 'text-white', 'border-[#1B2A4A]');
-                btn.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
-            });
-            const activeSizeBtn = document.getElementById(`btn-logo-size-${appState.logoSize || 'md'}`);
-            if (activeSizeBtn) {
-                activeSizeBtn.classList.add('bg-[#1B2A4A]', 'text-white', 'border-[#1B2A4A]');
-                activeSizeBtn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
+            if (imgEl) {
+                imgEl.classList.remove('h-7', 'h-9', 'h-11', 'h-8');
+                imgEl.classList.add(sizeClasses[appState.logoSize] || 'h-9');
             }
 
-            if (appState.logoSrc && appState.logoSrc.trim() !== '') {
-                imgEl.src = appState.logoSrc.trim();
-                imgEl.classList.remove('hidden');
-                fallbackEl.classList.add('hidden');
-                if (removeBtn) removeBtn.classList.remove('hidden');
+            // Highlight active logo size button in drawer
+            ['sm', 'md', 'lg'].forEach(sz => {
+                const btn = document.getElementById(`btn-logo-size-${sz}`);
+                if (!btn) return;
+                if (sz === (appState.logoSize || 'md')) {
+                    btn.className = 'logo-size-btn py-1.5 px-2 rounded-lg border text-xs font-bold transition-all bg-[#1B2A4A] text-white border-[#1B2A4A]';
+                } else {
+                    btn.className = 'logo-size-btn py-1.5 px-2 rounded-lg border text-xs font-bold transition-all bg-white text-slate-700 border-slate-300 hover:bg-slate-100';
+                }
+            });
 
+            if (appState.logoSrc && appState.logoSrc.trim() !== '') {
+                imgEl.onload = () => {
+                    imgEl.classList.remove('hidden');
+                    fallbackEl.classList.add('hidden');
+                };
                 imgEl.onerror = () => {
                     imgEl.classList.add('hidden');
                     fallbackEl.classList.remove('hidden');
                 };
+                imgEl.src = appState.logoSrc.trim();
+                if (removeBtn) removeBtn.classList.remove('hidden');
             } else {
                 imgEl.src = '';
                 imgEl.classList.add('hidden');
@@ -852,140 +749,17 @@
             }
         }
 
-        function renderSidebarAndTicker() {
-            renderHeaderLogo();
-            const preset = SITE_PRESETS[appState.site] || SITE_PRESETS['harolds-cross'];
-
-            // Update Top Header Site Pill & Buttons
-            document.getElementById('site-pill').textContent = preset.name;
-            document.querySelectorAll('.site-btn').forEach(btn => {
-                btn.classList.remove('bg-[#4A90D9]', 'text-white', 'shadow-sm');
-                btn.classList.add('text-slate-300');
-            });
-            const activeTopBtn = document.getElementById(`btn-site-${appState.site}`);
-            if (activeTopBtn) {
-                activeTopBtn.classList.add('bg-[#4A90D9]', 'text-white', 'shadow-sm');
-                activeTopBtn.classList.remove('text-slate-300');
-            }
-
-            // Drawer site buttons
-            document.querySelectorAll('.drawer-site-btn').forEach(btn => {
-                btn.classList.remove('bg-[#1B2A4A]', 'text-white', 'border-[#1B2A4A]');
-                btn.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
-            });
-            const activeDrawerBtn = document.getElementById(`drawer-site-${appState.site}`);
-            if (activeDrawerBtn) {
-                activeDrawerBtn.classList.add('bg-[#1B2A4A]', 'text-white', 'border-[#1B2A4A]');
-                activeDrawerBtn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
-            }
-
-            // Render Upcoming Events Card
-            const eventsToShow = (appState.customEvents && appState.customEvents.length > 0)
-                ? appState.customEvents
-                : preset.defaultEvents;
-
-            const eventsContainer = document.getElementById('sidebar-events-list');
-            eventsContainer.innerHTML = eventsToShow.map((ev, idx) => `
-                <div class="${idx > 0 ? 'pt-2' : ''}">
-                    <p class="text-xs sm:text-[13px] font-extrabold text-[#1B2A4A] leading-snug">${ev.title}</p>
-                    <p class="text-[11px] sm:text-xs text-slate-600 font-medium mt-0.5 leading-snug">${ev.detail}</p>
-                </div>
-            `).join('');
-
-            // Render Visitor Info Card
-            document.getElementById('visitor-card-title').textContent = `${preset.name} — Visitor Info`;
-            const visitorContainer = document.getElementById('sidebar-visitor-list');
-            visitorContainer.innerHTML = preset.visitorInfo.map(item => `
-                <div class="flex items-start space-x-2.5">
-                    <div class="p-1.5 rounded-lg bg-[#4A90D9]/15 text-[#1B2A4A] shrink-0 mt-0.5">
-                        <i data-lucide="${item.icon}" class="w-3.5 h-3.5"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs font-extrabold text-[#1B2A4A] leading-tight">${item.label}</p>
-                        <p class="text-[11px] text-slate-600 leading-snug mt-0.5">${item.value}</p>
-                    </div>
-                </div>
-            `).join('');
-
-            // Render QR Code
-            document.getElementById('qr-badge').textContent = appState.qrBadge || 'Light Up A Life';
-            document.getElementById('qr-headline').textContent = appState.qrHeadline || 'Sponsor a Light Online';
-            const cleanDisplayUrl = (appState.qrUrl || 'https://lightupalife.ie').replace(/^https?:\/\//, '').split('?')[0];
-            document.getElementById('qr-subtext').innerHTML = `Scan with your phone camera or visit <span class="font-bold text-[#1B2A4A]">${cleanDisplayUrl}</span>`;
-
-            const qrTarget = document.getElementById('qr-code-target');
-            qrTarget.innerHTML = '';
-            try {
-                new QRCode(qrTarget, {
-                    text: appState.qrUrl || 'https://lightupalife.ie',
-                    width: 68,
-                    height: 68,
-                    colorDark: '#1B2A4A',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.M
-                });
-            } catch (e) {
-                qrTarget.innerHTML = `<div class="w-[68px] h-[68px] bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">QR</div>`;
-            }
-
-            // Render Bottom Scrolling Ticker
-            document.getElementById('ticker-badge-label').textContent = appState.tickerBadge || 'Hospice Updates';
-            const lines = (appState.tickerLines && appState.tickerLines.length > 0) ? appState.tickerLines : DEFAULT_TICKER_LINES;
-            
-            const tickerItemHtml = lines.map(line => `
-                <span class="inline-flex items-center text-sm sm:text-base font-semibold tracking-wide text-white px-6">
-                    <span>${line}</span>
-                    <span class="ml-6 inline-block w-2 h-2 rounded-full bg-[#4A90D9]"></span>
-                </span>
-            `).join('');
-
-            // Duplicate content seamlessly for continuous loop
-            const tickerTrack = document.getElementById('ticker-track');
-            tickerTrack.innerHTML = tickerItemHtml + tickerItemHtml;
-            
-            // Adjust scroll speed proportionally to total character length
-            const totalChars = lines.join(' ').length;
-            const durationSec = Math.max(24, Math.round(totalChars * 0.14));
-            tickerTrack.style.setProperty('--ticker-duration', `${durationSec}s`);
-
-            lucide.createIcons();
-        }
-
-        // =========================================================================
-        // 7. INTERACTIVE CONTROLS & CUSTOMISER DRAWER LOGIC
-        // =========================================================================
-        function switchSite(siteKey) {
-            if (!SITE_PRESETS[siteKey]) return;
-            appState.site = siteKey;
-            saveState();
-            renderSidebarAndTicker();
-            fetchLiveWeather();
-            if (appState.embedUrl) renderStage();
-            showToast(`Switched screen to ${SITE_PRESETS[siteKey].name}`);
-        }
-
-        function toggleEditor() {
-            const drawer = document.getElementById('editor-drawer');
-            const backdrop = document.getElementById('editor-backdrop');
-            const isClosed = drawer.classList.contains('translate-x-full');
-
-            if (isClosed) {
-                // Populate inputs with current state
-                document.getElementById('input-logo-url').value = appState.logoSrc || '';
-                document.getElementById('input-embed-url').value = appState.embedUrl || '';
-                document.getElementById('input-ticker-badge').value = appState.tickerBadge || 'Hospice Updates';
-                document.getElementById('input-ticker-lines').value = (appState.tickerLines || DEFAULT_TICKER_LINES).join('\n');
         function handleLogoFileUpload(event) {
             const file = event.target.files && event.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const dataUrl = e.target.result;
-                appState.logoSrc = dataUrl;
-                document.getElementById('input-logo-url').value = dataUrl;
-                saveState();
-                renderHeaderLogo();
+                appState.logoSrc = e.target.result;
+                const urlInput = document.getElementById('input-logo-url');
+                if (urlInput) urlInput.value = 'Uploaded Logo (' + file.name + ')';
+                applyLogoState();
+                persistAppState();
                 showToast('Logo uploaded to top-left header');
             };
             reader.readAsDataURL(file);
@@ -993,53 +767,495 @@
 
         function previewLogoUrlInput() {
             const val = document.getElementById('input-logo-url').value.trim();
+            if (val.startsWith('Uploaded Logo (')) return;
             appState.logoSrc = val;
-            renderHeaderLogo();
+            applyLogoState();
+            persistAppState();
         }
 
-        function setLogoSize(sizeKey) {
-            appState.logoSize = sizeKey;
-            saveState();
-            renderHeaderLogo();
+        function setLogoSize(size) {
+            appState.logoSize = size;
+            applyLogoState();
+            persistAppState();
         }
 
         function removeCustomLogo() {
             appState.logoSrc = '';
-            document.getElementById('input-logo-url').value = '';
-            document.getElementById('input-logo-file').value = '';
-            saveState();
-            renderHeaderLogo();
+            const fileInput = document.getElementById('input-logo-file');
+            const urlInput = document.getElementById('input-logo-url');
+            if (fileInput) fileInput.value = '';
+            if (urlInput) urlInput.value = '';
+            applyLogoState();
+            persistAppState();
             showToast('Custom logo removed');
         }
 
+        // =========================================================================
+        // 4. SITE SWITCHING, SIDEBAR & QR CODE RENDERING
+        // =========================================================================
+        function switchSite(siteKey) {
+            if (!SITE_PRESETS[siteKey]) return;
+            appState.site = siteKey;
+            persistAppState();
+            renderSiteUI();
+            fetchLiveWeather();
+            showToast(`Switched display to ${SITE_PRESETS[siteKey].name}`);
+        }
+
+        function renderSiteUI() {
+            const preset = SITE_PRESETS[appState.site] || SITE_PRESETS['harolds-cross'];
+
+            // Header site pill
+            const sitePill = document.getElementById('site-pill');
+            if (sitePill) sitePill.textContent = preset.name;
+
+            // Header & Drawer site button highlights
+            Object.keys(SITE_PRESETS).forEach(key => {
+                const headerBtn = document.getElementById(`btn-site-${key}`);
+                if (headerBtn) {
+                    headerBtn.className = key === appState.site
+                        ? 'site-btn px-3 py-1 rounded-md transition-all bg-[#4A90D9] text-white shadow-sm'
+                        : 'site-btn px-3 py-1 rounded-md transition-all text-slate-300 hover:text-white';
+                }
+                const drawerBtn = document.getElementById(`drawer-site-${key}`);
+                if (drawerBtn) {
+                    drawerBtn.className = key === appState.site
+                        ? 'drawer-site-btn py-2 px-3 rounded-lg border text-xs font-bold transition-all bg-[#1B2A4A] text-white border-[#1B2A4A]'
+                        : 'drawer-site-btn py-2 px-3 rounded-lg border text-xs font-bold transition-all bg-white text-slate-700 border-slate-300 hover:bg-slate-50';
+                }
+            });
+
+            // Weather location label
+            const weatherLoc = document.getElementById('weather-loc');
+            if (weatherLoc) weatherLoc.textContent = preset.weatherLabel;
+
+            // Upcoming Events list
+            const eventsContainer = document.getElementById('sidebar-events-list');
+            const activeEvents = (appState.customEvents && appState.customEvents.length > 0)
+                ? appState.customEvents
+                : preset.defaultEvents;
+
+            if (eventsContainer) {
+                eventsContainer.innerHTML = activeEvents.map((ev, idx) => `
+                    <div class="${idx > 0 ? 'pt-2.5' : ''}">
+                        <p class="text-xs sm:text-[13px] font-extrabold text-[#1B2A4A] leading-snug">${escapeHtml(ev.title)}</p>
+                        <p class="text-[11px] sm:text-xs text-slate-600 leading-snug mt-0.5">${escapeHtml(ev.detail)}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Visitor Info list
+            const visitorTitle = document.getElementById('visitor-card-title');
+            if (visitorTitle) visitorTitle.textContent = `${preset.name} Visitor Info`;
+
+            const visitorContainer = document.getElementById('sidebar-visitor-list');
+            if (visitorContainer) {
+                visitorContainer.innerHTML = preset.visitorInfo.map(item => `
+                    <div class="flex items-start space-x-2.5">
+                        <div class="w-6 h-6 rounded-lg bg-[#4A90D9]/15 text-[#1B2A4A] flex items-center justify-center shrink-0 mt-0.5">
+                            <i data-lucide="${item.icon}" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="font-bold text-[#1B2A4A] leading-tight">${escapeHtml(item.label)}</p>
+                            <p class="text-slate-600 text-[11px] sm:text-xs leading-snug mt-0.5">${escapeHtml(item.value)}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // QR Code & Text
+            const qrBadge = document.getElementById('qr-badge');
+            const qrHeadline = document.getElementById('qr-headline');
+            const qrSubtext = document.getElementById('qr-subtext');
+            if (qrBadge) qrBadge.textContent = appState.qrBadge || 'Light Up A Life';
+            if (qrHeadline) qrHeadline.textContent = appState.qrHeadline || 'Sponsor a Light Online';
+
+            const targetUrl = appState.qrUrl || 'https://lightupalife.ie?utm_source=onsite_screens';
+            const cleanDisplayUrl = targetUrl.replace(/^https?:\/\//, '').split('?')[0];
+            if (qrSubtext) {
+                qrSubtext.innerHTML = `Scan with your phone camera or visit <span class="font-bold text-[#1B2A4A]">${escapeHtml(cleanDisplayUrl)}</span>`;
+            }
+
+            renderQrCode(targetUrl);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function renderQrCode(url) {
+            const target = document.getElementById('qr-code-target');
+            if (!target) return;
+            target.innerHTML = '';
+            if (typeof QRCode !== 'undefined') {
+                new QRCode(target, {
+                    text: url,
+                    width: 68,
+                    height: 68,
+                    colorDark: '#1B2A4A',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+        }
+
+        // =========================================================================
+        // 5. MAIN PRESENTATION STAGE (12-SECOND SLIDESHOW & LIVE EMBED)
+        // =========================================================================
+        function renderStage() {
+            const slideshowEl = document.getElementById('demo-slideshow');
+            const embedContainer = document.getElementById('embed-container');
+            const embedFrame = document.getElementById('external-embed-frame');
+            const controlsEl = document.getElementById('slideshow-controls');
+            const dotsEl = document.getElementById('slide-dots');
+
+            if (appState.embedUrl && appState.embedUrl.trim() !== '') {
+                slideshowEl.classList.add('hidden');
+                embedContainer.classList.remove('hidden');
+                if (controlsEl) controlsEl.classList.add('hidden');
+                if (dotsEl) dotsEl.innerHTML = '';
+
+                if (embedFrame.src !== appState.embedUrl.trim()) {
+                    embedFrame.src = appState.embedUrl.trim();
+                }
+
+                document.getElementById('stage-badge-text').textContent = 'Live Cloud Presentation';
+                document.getElementById('stage-lower-third').textContent =
+                    `Our Lady’s Hospice & Care Services — ${SITE_PRESETS[appState.site]?.name || 'Live Broadcast'}`;
+                stopSlideshowTimer();
+                resetProgressBar(false);
+                return;
+            }
+
+            // Built-in 12-second slideshow mode
+            embedContainer.classList.add('hidden');
+            embedFrame.src = '';
+            slideshowEl.classList.remove('hidden');
+            if (controlsEl) controlsEl.classList.remove('hidden');
+
+            renderSlide(currentSlideIndex);
+            startSlideshowTimer();
+        }
+
+        function renderSlide(index) {
+            const slide = DEMO_SLIDES[index % DEMO_SLIDES.length];
+            const slideshowEl = document.getElementById('demo-slideshow');
+            const dotsEl = document.getElementById('slide-dots');
+
+            slideshowEl.innerHTML = `
+                <div class="slide-active w-full h-full bg-gradient-to-br ${slide.bgGradient} text-white p-6 sm:p-10 xl:p-14 flex flex-col justify-between relative overflow-hidden">
+                    <!-- Decorative Brand Curves -->
+                    <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full opacity-20 pointer-events-none" style="background: radial-gradient(circle, ${slide.accentColor}, transparent 70%);"></div>
+                    <div class="absolute -left-16 -bottom-24 w-96 h-96 rounded-full bg-[#4A90D9]/15 pointer-events-none"></div>
+
+                    <div class="mt-8 sm:mt-10 max-w-3xl z-10">
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider mb-4 shadow-sm" style="background-color: ${slide.accentColor};">
+                            ${escapeHtml(slide.tag)}
+                        </span>
+                        <h2 class="text-2xl sm:text-4xl xl:text-5xl font-black tracking-tight leading-tight text-white">
+                            ${escapeHtml(slide.title)}
+                        </h2>
+                        <p class="mt-4 text-sm sm:text-lg xl:text-xl text-blue-100/95 font-medium leading-relaxed max-w-2xl">
+                            ${escapeHtml(slide.subtitle)}
+                        </p>
+                    </div>
+
+                    <div class="z-10 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/15">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white">
+                                <i data-lucide="${slide.icon}" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-sm sm:text-base font-extrabold text-white tracking-wide">
+                                ${escapeHtml(slide.cta)}
+                            </span>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-blue-200/80">
+                            Slide ${index + 1} of ${DEMO_SLIDES.length}
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('stage-badge-text').textContent = slide.badge;
+            document.getElementById('stage-lower-third').textContent = slide.lowerThird;
+
+            if (dotsEl) {
+                dotsEl.innerHTML = DEMO_SLIDES.map((_, i) => `
+                    <button onclick="goToSlide(${i})" class="h-2 rounded-full transition-all ${i === index ? 'w-6 bg-[#D83A76]' : 'w-2 bg-white/35 hover:bg-white/60'}" title="Slide ${i + 1}"></button>
+                `).join('');
+            }
+
+            if (window.lucide) lucide.createIcons();
+            resetProgressBar(isPlaying);
+        }
+
+        function resetProgressBar(animate) {
+            const bar = document.getElementById('slide-progress-bar');
+            if (!bar) return;
+            bar.classList.remove('progress-anim');
+            bar.style.width = '0%';
+            void bar.offsetWidth; // force reflow
+            if (animate) {
+                bar.classList.add('progress-anim');
+            }
+        }
+
+        function startSlideshowTimer() {
+            stopSlideshowTimer();
+            if (!isPlaying || (appState.embedUrl && appState.embedUrl.trim() !== '')) return;
+            slideTimer = setInterval(() => {
+                currentSlideIndex = (currentSlideIndex + 1) % DEMO_SLIDES.length;
+                renderSlide(currentSlideIndex);
+            }, SLIDE_INTERVAL_MS);
+        }
+
+        function stopSlideshowTimer() {
+            if (slideTimer) {
+                clearInterval(slideTimer);
+                slideTimer = null;
+            }
+        }
+
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % DEMO_SLIDES.length;
+            renderSlide(currentSlideIndex);
+            startSlideshowTimer();
+        }
+
+        function prevSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + DEMO_SLIDES.length) % DEMO_SLIDES.length;
+            renderSlide(currentSlideIndex);
+            startSlideshowTimer();
+        }
+
+        function goToSlide(idx) {
+            currentSlideIndex = idx;
+            renderSlide(currentSlideIndex);
+            startSlideshowTimer();
+        }
+
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('play-pause-btn');
+            if (btn) {
+                btn.innerHTML = isPlaying
+                    ? '<i data-lucide="pause" class="w-4 h-4"></i>'
+                    : '<i data-lucide="play" class="w-4 h-4"></i>';
+                if (window.lucide) lucide.createIcons();
+            }
+            if (isPlaying) {
+                resetProgressBar(true);
+                startSlideshowTimer();
+            } else {
+                stopSlideshowTimer();
+                resetProgressBar(false);
+            }
+        }
+
         function applyEmbedUrl() {
-            const urlVal = document.getElementById('input-embed-url').value.trim();
-            appState.embedUrl = urlVal;
-            saveState();
+            const url = document.getElementById('input-embed-url').value.trim();
+            appState.embedUrl = url;
+            persistAppState();
             renderStage();
-            showToast(urlVal ? 'Live presentation embed loaded' : 'Switched to 12-second slides');
+            showToast(url ? 'Loaded live presentation embed' : 'Switched to 12s built-in slides');
         }
 
         function clearEmbedUrl() {
             document.getElementById('input-embed-url').value = '';
             appState.embedUrl = '';
-            saveState();
+            persistAppState();
             renderStage();
-            showToast('Switched back to 12-second campaign slides');
+            showToast('Switched back to 12-second slides');
+        }
+
+        // =========================================================================
+        // 6. BOTTOM NEWS TICKER RENDERING
+        // =========================================================================
+        function renderTicker() {
+            const badgeEl = document.getElementById('ticker-badge-label');
+            const trackEl = document.getElementById('ticker-track');
+            if (badgeEl) badgeEl.textContent = appState.tickerBadge || 'Hospice Updates';
+
+            const lines = (appState.tickerLines && appState.tickerLines.length > 0)
+                ? appState.tickerLines
+                : DEFAULT_TICKER_LINES;
+
+            const itemsHtml = lines.map(line => `
+                <span class="inline-flex items-center text-sm sm:text-base font-bold tracking-wide text-white px-6">
+                    <span class="w-2 h-2 rounded-full bg-[#4A90D9] mr-3 shrink-0"></span>
+                    ${escapeHtml(line)}
+                </span>
+            `).join('');
+
+            // Duplicate content seamlessly for continuous infinite scroll
+            if (trackEl) {
+                trackEl.innerHTML = itemsHtml + itemsHtml;
+                const totalChars = lines.join('').length;
+                const durationSec = Math.max(25, Math.min(90, Math.round(totalChars * 0.14)));
+                trackEl.style.setProperty('--ticker-duration', `${durationSec}s`);
+            }
+        }
+
+        // =========================================================================
+        // 7. LIVE FLUID CLOCK, DATE & OPEN-METEO WEATHER
+        // =========================================================================
+        function updateLiveClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const hmEl = document.getElementById('live-clock-hm');
+            const secEl = document.getElementById('live-clock-sec');
+            const dateEl = document.getElementById('live-date');
+
+            if (hmEl) hmEl.textContent = `${hours}:${minutes}`;
+            if (secEl) secEl.textContent = `:${seconds}`;
+            if (dateEl) {
+                dateEl.textContent = now.toLocaleDateString('en-IE', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            }
+        }
+
+        async function fetchLiveWeather() {
+            const preset = SITE_PRESETS[appState.site] || SITE_PRESETS['harolds-cross'];
+            const tempEl = document.getElementById('weather-temp');
+            const descEl = document.getElementById('weather-desc');
+            const iconBox = document.getElementById('weather-icon-box');
+
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${preset.lat}&longitude=${preset.lon}&current_weather=true`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Weather API unavailable');
+                const data = await res.json();
+                if (data && data.current_weather) {
+                    const temp = Math.round(data.current_weather.temperature);
+                    const code = data.current_weather.weathercode;
+                    const info = mapWeatherCode(code);
+                    if (tempEl) tempEl.textContent = `${temp}°C`;
+                    if (descEl) descEl.textContent = info.label;
+                    if (iconBox) {
+                        iconBox.innerHTML = `<i data-lucide="${info.icon}" class="w-7 h-7"></i>`;
+                        if (window.lucide) lucide.createIcons();
+                    }
+                }
+            } catch (err) {
+                console.warn('Using fallback weather display:', err);
+            }
+        }
+
+        function mapWeatherCode(code) {
+            if (code === 0) return { label: 'Clear Sky', icon: 'sun' };
+            if (code <= 3) return { label: 'Partly Cloudy', icon: 'cloud-sun' };
+            if (code <= 48) return { label: 'Mist / Fog', icon: 'cloud-fog' };
+            if (code <= 67) return { label: 'Light Rain', icon: 'cloud-rain' };
+            if (code <= 77) return { label: 'Wintry Showers', icon: 'snowflake' };
+            if (code <= 82) return { label: 'Rain Showers', icon: 'cloud-drizzle' };
+            return { label: 'Changeable', icon: 'cloud' };
+        }
+
+        // =========================================================================
+        // 8. DRAWER SAVE, RESET, FULLSCREEN & EXPORT BAKED HTML
+        // =========================================================================
+        function toggleEditor() {
+            const drawer = document.getElementById('editor-drawer');
+            const backdrop = document.getElementById('editor-backdrop');
+            const isClosed = drawer.classList.contains('translate-x-full');
+
+            if (isClosed) {
+                document.getElementById('input-logo-url').value = appState.logoSrc && !appState.logoSrc.startsWith('data:')
+                    ? appState.logoSrc
+                    : (appState.logoSrc ? 'Uploaded Logo (Embedded)' : '');
+                document.getElementById('input-embed-url').value = appState.embedUrl || '';
+                document.getElementById('input-ticker-badge').value = appState.tickerBadge || 'Hospice Updates';
+                document.getElementById('input-ticker-lines').value = (appState.tickerLines || DEFAULT_TICKER_LINES).join('\n');
+                document.getElementById('input-qr-url').value = appState.qrUrl || 'https://lightupalife.ie?utm_source=onsite_screens';
+                document.getElementById('input-qr-headline').value = appState.qrHeadline || 'Sponsor a Light Online';
+                document.getElementById('input-qr-badge').value = appState.qrBadge || 'Light Up A Life';
+
+                const preset = SITE_PRESETS[appState.site] || SITE_PRESETS['harolds-cross'];
+                const activeEvents = (appState.customEvents && appState.customEvents.length > 0)
+                    ? appState.customEvents
+                    : preset.defaultEvents;
+                document.getElementById('input-events-lines').value = activeEvents
+                    .map(ev => `${ev.title} | ${ev.detail}`)
+                    .join('\n');
+
+                drawer.classList.remove('translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                drawer.classList.add('translate-x-full');
+                backdrop.classList.add('hidden');
+            }
         }
 
         function saveSettingsFromDrawer() {
-            appState.logoSrc = document.getElementById('input-logo-url').value.trim();
+            const logoUrlVal = document.getElementById('input-logo-url').value.trim();
+            if (logoUrlVal && !logoUrlVal.startsWith('Uploaded Logo (')) {
+                appState.logoSrc = logoUrlVal;
+            } else if (!logoUrlVal) {
+                appState.logoSrc = '';
+            }
+
             appState.embedUrl = document.getElementById('input-embed-url').value.trim();
             appState.tickerBadge = document.getElementById('input-ticker-badge').value.trim() || 'Hospice Updates';
-            
+
             const rawTicker = document.getElementById('input-ticker-lines').value
                 .split('\n')
-                .map(l => l.trim())
+                .map(s => s.trim())
                 .filter(Boolean);
-            appState.tickerLines = rawTicker.length > 0 ? rawTicker : [...DEFAULT_TICKER_LINES];
+            appState.tickerLines = rawTicker.length > 0 ? rawTicker : null;
 
-            appState.qrUrl = document.getElementById('input-qr-url').value.trim() || 'https://lightupalife.ie';
+            appState.qrUrl = document.getElementById('input-qr-url').value.trim() || 'https://lightupalife.ie?utm_source=onsite_screens';
+            appState.qrHeadline = document.getElementById('input-qr-headline').value.trim() || 'Sponsor a Light Online';
+            appState.qrBadge = document.getElementById('input-qr-badge').value.trim() || 'Light Up A Life';
+
+            const rawEvents = document.getElementById('input-events-lines').value
+                .split('\n')
+                .map(line => line.trim())
+                .filter(Boolean)
+                .map(line => {
+                    const parts = line.split('|');
+                    return {
+                        title: (parts[0] || '').trim(),
+                        detail: (parts.slice(1).join('|') || '').trim()
+                    };
+                });
+            appState.customEvents = rawEvents.length > 0 ? rawEvents : null;
+
+            persistAppState();
+            applyLogoState();
+            renderSiteUI();
+            renderStage();
+            renderTicker();
+            toggleEditor();
+            showToast('All screen settings saved & applied');
+        }
+
+        function resetToDefaults() {
+            localStorage.removeItem(STORAGE_KEY);
+            appState = Object.assign({}, BAKED_CONFIG);
+            applyLogoState();
+            renderSiteUI();
+            renderStage();
+            renderTicker();
+            fetchLiveWeather();
+            toggleEditor();
+            showToast('Reset to default settings');
+        }
+
+        function exportConfiguredHtml() {
+            // Ensure current drawer edits are captured before exporting
+            const logoUrlVal = document.getElementById('input-logo-url').value.trim();
+            if (logoUrlVal && !logoUrlVal.startsWith('Uploaded Logo (')) {
+                appState.logoSrc = logoUrlVal;
+            }
+            appState.embedUrl = document.getElementById('input-embed-url').value.trim();
+            appState.tickerBadge = document.getElementById('input-ticker-badge').value.trim() || 'Hospice Updates';
+            const rawTicker = document.getElementById('input-ticker-lines').value.split('\n').map(s => s.trim()).filter(Boolean);
+            appState.tickerLines = rawTicker.length > 0 ? rawTicker : null;
+            appState.qrUrl = document.getElementById('input-qr-url').value.trim() || 'https://lightupalife.ie?utm_source=onsite_screens';
             appState.qrHeadline = document.getElementById('input-qr-headline').value.trim() || 'Sponsor a Light Online';
             appState.qrBadge = document.getElementById('input-qr-badge').value.trim() || 'Light Up A Life';
 
@@ -1047,122 +1263,85 @@
                 .split('\n')
                 .map(l => l.trim())
                 .filter(Boolean)
-                .map(line => {
-                    const parts = line.split('|');
-                    return {
-                        title: (parts[0] || '').trim(),
-                        detail: (parts[1] || 'Information available at Reception').trim()
-                    };
+                .map(l => {
+                    const parts = l.split('|');
+                    return { title: (parts[0] || '').trim(), detail: (parts.slice(1).join('|') || '').trim() };
                 });
             appState.customEvents = rawEvents.length > 0 ? rawEvents : null;
+            persistAppState();
 
-            saveState();
-            renderStage();
-            renderSidebarAndTicker();
-            toggleEditor();
-            showToast('Screen configuration saved & updated');
-        }
+            // Serialize current full document with BAKED_CONFIG updated so GitHub Pages loads it everywhere
+            let htmlSource = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const bakedJson = JSON.stringify(appState, null, 12);
+            htmlSource = htmlSource.replace(
+                /const BAKED_CONFIG = \{[\s\S]*?\};/,
+                `const BAKED_CONFIG = ${bakedJson};`
+            );
 
-        function resetToDefaults() {
-            localStorage.removeItem(STORAGE_KEY);
-            appState = { ...BAKED_DEFAULT_CONFIG };
-            renderStage();
-            renderSidebarAndTicker();
-            fetchLiveWeather();
-            toggleEditor();
-            showToast('Reset to default hospice broadcast settings');
-        }
-
-        function exportConfiguredHtml() {
-            try {
-                // Capture current live DOM HTML and bake appState directly into BAKED_DEFAULT_CONFIG
-                const docClone = document.documentElement.cloneNode(true);
-                // Ensure drawer is closed in exported file
-                const clonedDrawer = docClone.querySelector('#editor-drawer');
-                const clonedBackdrop = docClone.querySelector('#editor-backdrop');
-                if (clonedDrawer) clonedDrawer.classList.add('translate-x-full');
-                if (clonedBackdrop) clonedBackdrop.classList.add('hidden');
-
-                let htmlString = '<!DOCTYPE html>\n' + docClone.outerHTML;
-                const serializedConfig = JSON.stringify(appState, null, 4);
-                htmlString = htmlString.replace(
-                    /\/\*BAKED_CONFIG_START\*\/[\s\S]*?\/\*BAKED_CONFIG_END\*\//,
-                    `/*BAKED_CONFIG_START*/${serializedConfig}/*BAKED_CONFIG_END*/`
-                );
-
-                const blob = new Blob([htmlString], { type: 'text/html;charset=utf-8' });
-                const downloadUrl = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.download = 'index.html';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(downloadUrl);
-
-                showToast('Downloaded updated index.html ready for GitHub');
-            } catch (err) {
-                console.error('Export failed:', err);
-                showToast('Could not export HTML file');
-            }
-        }
-
-        // Auto-hide kiosk UI controls after 5 seconds of mouse inactivity
-        let idleTimeout = null;
-        function resetIdleTimer() {
-            document.body.classList.remove('is-idle');
-            clearTimeout(idleTimeout);
-            idleTimeout = setTimeout(() => {
-                const drawerOpen = !document.getElementById('editor-drawer').classList.contains('translate-x-full');
-                if (!drawerOpen) {
-                    document.body.classList.add('is-idle');
-                }
-            }, 5000);
+            const blob = new Blob([htmlSource], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Downloaded index.html with your logo & settings baked in');
         }
 
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(() => {
-                    showToast('Press F11 on your keyboard for Kiosk Full-Screen');
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.warn('Fullscreen request blocked:', err);
                 });
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                document.exitFullscreen().catch(() => {});
             }
         }
 
-        function showToast(message) {
-            const toast = document.getElementById('toast-msg');
-            document.getElementById('toast-text').textContent = message;
-            toast.classList.remove('opacity-0');
-            setTimeout(() => {
-                toast.classList.add('opacity-0');
-            }, 3000);
+        function setupIdleCursorHider() {
+            const resetIdle = () => {
+                document.body.classList.remove('is-idle');
+                clearTimeout(idleTimer);
+                idleTimer = setTimeout(() => {
+                    const drawer = document.getElementById('editor-drawer');
+                    if (drawer && drawer.classList.contains('translate-x-full')) {
+                        document.body.classList.add('is-idle');
+                    }
+                }, 4500);
+            };
+            ['mousemove', 'mousedown', 'touchstart', 'keydown'].forEach(evt => {
+                window.addEventListener(evt, resetIdle, { passive: true });
+            });
+            resetIdle();
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
 
         // =========================================================================
-        // 8. INITIALISE ON WINDOW LOAD
+        // 9. BOOTSTRAP APPLICATION ON LOAD
         // =========================================================================
-        window.onload = function () {
-            loadState();
-            updateClockAndDate();
-            setInterval(updateClockAndDate, 1000);
-
+        window.addEventListener('DOMContentLoaded', () => {
+            applyLogoState();
+            renderSiteUI();
             renderStage();
-            renderSidebarAndTicker();
+            renderTicker();
+            updateLiveClock();
             fetchLiveWeather();
-            // Refresh weather every 15 minutes
-            setInterval(fetchLiveWeather, 15 * 60 * 1000);
+            setupIdleCursorHider();
 
-            // Track mouse movement to auto-hide kiosk controls cleanly
-            window.addEventListener('mousemove', resetIdleTimer);
-            window.addEventListener('mousedown', resetIdleTimer);
-            window.addEventListener('touchstart', resetIdleTimer);
-            resetIdleTimer();
-
-            lucide.createIcons();
-        };
+            setInterval(updateLiveClock, 1000);
+            setInterval(fetchLiveWeather, 15 * 60 * 1000); // Refresh weather every 15 mins
+            if (window.lucide) lucide.createIcons();
+        });
     </script>
 </body>
 </html>
