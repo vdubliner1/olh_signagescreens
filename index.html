@@ -79,7 +79,16 @@
         }
 
         .progress-anim {
-            animation: progressFill 8s linear forwards;
+            animation: progressFill 12s linear forwards;
+        }
+
+        /* Auto-hide kiosk UI controls when idle */
+        .kiosk-idle-hide {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        body.is-idle .kiosk-idle-hide {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* Custom subtle scrollbars for the editor drawer */
@@ -98,65 +107,76 @@
 <body class="h-screen w-screen flex flex-col bg-[#111C33] text-slate-900 overflow-hidden">
 
     <!-- TOP BROADCAST HEADER BAR -->
-    <header class="h-14 bg-[#1B2A4A] text-white px-5 flex items-center justify-between border-b border-white/15 shrink-0 z-20 shadow-md">
-        <!-- Brand Identity & Decorative Ribbon Accent -->
-        <div class="flex items-center space-x-3.5">
-            <!-- Custom OLH Wave Emblem SVG -->
-            <div class="w-9 h-9 rounded-lg bg-white flex items-center justify-center p-1 shadow-sm shrink-0">
-                <svg viewBox="0 0 64 64" class="w-full h-full">
-                    <path d="M4,58 C20,56 32,48 44,58 L4,58 Z" fill="#4A90D9"/>
-                    <path d="M4,34 C14,48 28,46 38,58 L4,58 Z" fill="#1B2A4A"/>
-                    <path d="M4,22 C16,38 30,36 40,54 C31,42 16,42 4,30 Z" fill="#D83A76"/>
-                    <path d="M4,10 C18,28 32,26 41,45 C32,32 18,32 4,18 Z" fill="#D83A76"/>
-                </svg>
+    <header class="h-16 bg-[#1B2A4A] text-white px-5 flex items-center justify-between border-b border-white/15 shrink-0 z-20 shadow-md">
+        <!-- Brand Identity & Top-Left Logo Zone -->
+        <div class="flex items-center space-x-3.5 min-w-0">
+            <!-- Clickable Top-Left Logo Pill Container -->
+            <div onclick="toggleEditor()" title="Click to upload or change your logo" class="h-11 px-2.5 rounded-xl bg-white flex items-center justify-center shadow-sm shrink-0 cursor-pointer group relative overflow-hidden border border-white/80 hover:ring-2 hover:ring-[#4A90D9] transition-all">
+                <!-- Uploaded Custom Logo Image -->
+                <img id="header-custom-logo" src="" alt="Our Lady's Hospice & Care Services Logo" class="hidden h-8 w-auto object-contain transition-all duration-200">
+                
+                <!-- Fallback OLH Wave Emblem SVG (shown until logo is uploaded) -->
+                <div id="header-fallback-logo" class="flex items-center space-x-2 px-0.5">
+                    <svg viewBox="0 0 64 64" class="w-8 h-8 shrink-0">
+                        <path d="M4,58 C20,56 32,48 44,58 L4,58 Z" fill="#4A90D9"/>
+                        <path d="M4,34 C14,48 28,46 38,58 L4,58 Z" fill="#1B2A4A"/>
+                        <path d="M4,22 C16,38 30,36 40,54 C31,42 16,42 4,30 Z" fill="#D83A76"/>
+                        <path d="M4,10 C18,28 32,26 41,45 C32,32 18,32 4,18 Z" fill="#D83A76"/>
+                    </svg>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#1B2A4A] hidden sm:inline">Upload Logo</span>
+                </div>
             </div>
-            <div>
+
+            <div class="min-w-0">
                 <div class="flex items-center space-x-2">
-                    <h1 class="font-extrabold tracking-tight text-base sm:text-lg leading-none text-white">
+                    <h1 class="font-extrabold tracking-tight text-sm sm:text-lg leading-none text-white truncate">
                         OUR LADY’S HOSPICE &amp; CARE SERVICES
                     </h1>
-                    <span id="site-pill" class="px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider rounded-full bg-[#D83A76] text-white shadow-sm">
+                    <span id="site-pill" class="px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider rounded-full bg-[#D83A76] text-white shadow-sm shrink-0">
                         Harold’s Cross
                     </span>
                 </div>
-                <p class="text-[11px] text-blue-200/90 font-medium tracking-wide mt-0.5">
+                <p class="text-[11px] text-blue-200/90 font-medium tracking-wide mt-0.5 truncate">
                     Specialist Palliative Care, Rehabilitation &amp; Community Services
                 </p>
             </div>
         </div>
 
-        <!-- Right Header Controls: Quick Site Switcher, Cloud Sync Status, Fullscreen & Customise Button -->
-        <div class="flex items-center space-x-2.5">
-            <!-- Cloud Sync Indicator (Live System Mode) -->
-            <div id="cloud-sync-status" class="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold" title="Connected to Cloud Settings Feed">
+        <!-- Right Header Controls: LIVE Indicator, Quick Site Switcher, Fullscreen & Customise Button -->
+        <div class="flex items-center space-x-2.5 shrink-0">
+            <!-- Broadcast LIVE Status Badge -->
+            <div class="hidden xl:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-[11px] font-extrabold uppercase tracking-wider">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Live Feed Synced</span>
+                <span>LIVE</span>
             </div>
 
-            <!-- Quick Site Switcher Pills -->
-            <div class="hidden md:flex items-center bg-[#111C33]/80 p-1 rounded-lg border border-white/10 text-xs font-semibold">
-                <button onclick="switchSite('harolds-cross')" id="btn-site-harolds-cross" class="site-btn px-3 py-1 rounded-md transition-all bg-[#4A90D9] text-white shadow-sm">
-                    Harold’s Cross
+            <!-- Auto-Hiding Kiosk Controls Wrapper -->
+            <div class="kiosk-idle-hide flex items-center space-x-2">
+                <!-- Quick Site Switcher Pills -->
+                <div class="hidden md:flex items-center bg-[#111C33]/80 p-1 rounded-lg border border-white/10 text-xs font-semibold">
+                    <button onclick="switchSite('harolds-cross')" id="btn-site-harolds-cross" class="site-btn px-3 py-1 rounded-md transition-all bg-[#4A90D9] text-white shadow-sm">
+                        Harold’s Cross
+                    </button>
+                    <button onclick="switchSite('blackrock')" id="btn-site-blackrock" class="site-btn px-3 py-1 rounded-md transition-all text-slate-300 hover:text-white">
+                        Blackrock
+                    </button>
+                    <button onclick="switchSite('wicklow')" id="btn-site-wicklow" class="site-btn px-3 py-1 rounded-md transition-all text-slate-300 hover:text-white">
+                        Wicklow
+                    </button>
+                </div>
+
+                <!-- Fullscreen Kiosk Toggle -->
+                <button onclick="toggleFullScreen()" title="Toggle Full-Screen Kiosk Mode" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center space-x-1.5 text-xs font-semibold">
+                    <i data-lucide="maximize" class="w-4 h-4"></i>
+                    <span class="hidden lg:inline">Kiosk Mode</span>
                 </button>
-                <button onclick="switchSite('blackrock')" id="btn-site-blackrock" class="site-btn px-3 py-1 rounded-md transition-all text-slate-300 hover:text-white">
-                    Blackrock
-                </button>
-                <button onclick="switchSite('wicklow')" id="btn-site-wicklow" class="site-btn px-3 py-1 rounded-md transition-all text-slate-300 hover:text-white">
-                    Wicklow
+
+                <!-- Customise / Settings Drawer Trigger -->
+                <button onclick="toggleEditor()" title="Customise Logo, Screen & Embeds" class="p-2 rounded-lg bg-[#D83A76] hover:bg-[#c22e66] text-white transition-colors flex items-center space-x-1.5 text-xs font-bold shadow-sm">
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Customise</span>
                 </button>
             </div>
-
-            <!-- Fullscreen Kiosk Toggle -->
-            <button onclick="toggleFullScreen()" title="Toggle Full-Screen Kiosk Mode" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center space-x-1.5 text-xs font-semibold">
-                <i data-lucide="maximize" class="w-4 h-4"></i>
-                <span class="hidden lg:inline">Kiosk Mode</span>
-            </button>
-
-            <!-- Customise / Settings Drawer Trigger -->
-            <button onclick="toggleEditor()" title="Customise Screen & Embeds" class="p-2 rounded-lg bg-[#D83A76] hover:bg-[#c22e66] text-white transition-colors flex items-center space-x-1.5 text-xs font-bold shadow-sm">
-                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">Customise</span>
-            </button>
         </div>
     </header>
 
@@ -187,7 +207,7 @@
                 </div>
 
                 <!-- Manual Slide Controls (Hover reveal for easy testing) -->
-                <div id="slideshow-controls" class="absolute bottom-14 right-4 z-10 flex items-center space-x-1.5 opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity bg-[#1B2A4A]/85 backdrop-blur-md p-1.5 rounded-lg border border-white/15">
+                <div id="slideshow-controls" class="kiosk-idle-hide absolute bottom-14 right-4 z-10 flex items-center space-x-1.5 opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity bg-[#1B2A4A]/85 backdrop-blur-md p-1.5 rounded-lg border border-white/15">
                     <button onclick="prevSlide()" class="p-1.5 text-white hover:bg-white/20 rounded-md" title="Previous Slide">
                         <i data-lucide="chevron-left" class="w-4 h-4"></i>
                     </button>
@@ -202,7 +222,7 @@
 
             <!-- Lower-Third Stage Caption Bar (RTÉ News Style Sub-Headline) -->
             <div class="h-11 bg-[#1B2A4A] text-white px-4 flex items-center justify-between shrink-0 border-t-2 border-[#4A90D9] relative">
-                <!-- Slide Auto-Advance Progress Line -->
+                <!-- 12-Second Slide Auto-Advance Progress Line -->
                 <div id="slide-progress-bar" class="absolute top-0 left-0 h-[3px] bg-[#D83A76] w-0"></div>
                 
                 <div class="flex items-center space-x-3 overflow-hidden">
@@ -346,29 +366,56 @@
         <!-- Drawer Body -->
         <div class="flex-1 overflow-y-auto custom-scroll p-5 space-y-6 text-sm">
             
-            <!-- 0. Live Cloud Feed / JSON Sync Configuration -->
-            <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-3.5 space-y-2">
+            <!-- 0. Top-Left Logo Upload & Sizing -->
+            <div class="space-y-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                 <div class="flex items-center justify-between">
                     <label class="block text-xs font-extrabold uppercase tracking-wider text-[#1B2A4A]">
-                        Live Cloud JSON Feed (Production Sync)
+                        1. Top-Left Organisation Logo
                     </label>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-200 text-blue-900">Optional</span>
-                </div>
-                <p class="text-[11px] text-slate-600 leading-snug">
-                    Paste a public JSON endpoint URL (e.g. GitHub Gist raw URL or SharePoint JSON link) to auto-sync screen content across all 3 sites in real-time.
-                </p>
-                <div class="flex items-center space-x-2 pt-1">
-                    <input type="url" id="input-cloud-feed-url" placeholder="https://api.myjson.com/or/github/gist/raw..." class="flex-1 px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#4A90D9]">
-                    <button type="button" onclick="syncCloudFeedNow()" class="py-1.5 px-3 bg-[#1B2A4A] hover:bg-[#111C33] text-white font-bold rounded-lg text-xs transition-colors shrink-0">
-                        Sync Now
+                    <button type="button" onclick="removeCustomLogo()" id="btn-remove-logo" class="hidden text-[11px] font-bold text-rose-600 hover:text-rose-800">
+                        Remove Logo
                     </button>
+                </div>
+                <p class="text-xs text-slate-500">
+                    Upload a PNG or SVG logo from your computer, or enter a hosted file path (e.g., <code class="bg-slate-200/80 px-1 rounded">logo.png</code> in GitHub).
+                </p>
+
+                <!-- File Upload Drop/Button -->
+                <div class="flex items-center space-x-2">
+                    <label class="flex-1 cursor-pointer bg-white hover:bg-slate-100 border border-dashed border-slate-300 rounded-lg px-3 py-2 text-center transition-colors flex items-center justify-center space-x-2">
+                        <i data-lucide="upload" class="w-4 h-4 text-[#4A90D9]"></i>
+                        <span class="text-xs font-bold text-[#1B2A4A]">Choose Logo File (PNG / SVG)</span>
+                        <input type="file" id="input-logo-file" accept="image/*" onchange="handleLogoFileUpload(event)" class="hidden">
+                    </label>
+                </div>
+
+                <!-- Logo URL / Repo Filename Input -->
+                <div class="space-y-1">
+                    <label class="block text-[11px] font-bold text-slate-600">Or Logo Image URL / GitHub Filename</label>
+                    <input type="text" id="input-logo-url" placeholder="https://... or logo.png" oninput="previewLogoUrlInput()" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#4A90D9]">
+                </div>
+
+                <!-- Logo Height / Size Selector -->
+                <div class="space-y-1">
+                    <label class="block text-[11px] font-bold text-slate-600">Header Logo Size</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="setLogoSize('sm')" id="btn-logo-size-sm" class="logo-size-btn py-1.5 px-2 rounded-lg border text-xs font-bold transition-all">
+                            Small
+                        </button>
+                        <button type="button" onclick="setLogoSize('md')" id="btn-logo-size-md" class="logo-size-btn py-1.5 px-2 rounded-lg border text-xs font-bold transition-all">
+                            Medium
+                        </button>
+                        <button type="button" onclick="setLogoSize('lg')" id="btn-logo-size-lg" class="logo-size-btn py-1.5 px-2 rounded-lg border text-xs font-bold transition-all">
+                            Large
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- 1. Site Location Selector -->
+            <!-- 2. Site Location Selector -->
             <div class="space-y-2">
                 <label class="block text-xs font-extrabold uppercase tracking-wider text-[#1B2A4A]">
-                    1. Active Hospice Location
+                    2. Active Hospice Location
                 </label>
                 <p class="text-xs text-slate-500">Automatically updates local weather coordinates, visitor hours, and site badge.</p>
                 <div class="grid grid-cols-3 gap-2 pt-1">
@@ -386,13 +433,13 @@
 
             <hr class="border-slate-200">
 
-            <!-- 2. Main Stage Source (Built-in Slides vs Live Embed URL) -->
+            <!-- 3. Main Stage Source (Built-in 12s Slides vs Live Embed URL) -->
             <div class="space-y-2.5">
                 <label class="block text-xs font-extrabold uppercase tracking-wider text-[#1B2A4A]">
-                    2. Main Screen Presentation Source
+                    3. Main Screen Presentation Source (12s Auto-Advance)
                 </label>
                 <p class="text-xs text-slate-500">
-                    Use the built-in campaign slideshow or paste a live <strong>PowerPoint Online (OneDrive)</strong>, <strong>Canva</strong>, or <strong>Google Slides</strong> embed URL.
+                    Built-in slides rotate every <strong>12 seconds</strong>, or paste a live <strong>PowerPoint Online (OneDrive)</strong>, <strong>Canva</strong>, or <strong>Google Slides</strong> embed URL.
                 </p>
                 <input type="url" id="input-embed-url" placeholder="https://onedrive.live.com/embed?..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-[#4A90D9]">
                 <div class="flex items-center space-x-2">
@@ -400,17 +447,17 @@
                         Load Live Embed URL
                     </button>
                     <button type="button" onclick="clearEmbedUrl()" class="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs transition-colors">
-                        Use Built-In Slides
+                        Use 12s Slides
                     </button>
                 </div>
             </div>
 
             <hr class="border-slate-200">
 
-            <!-- 3. Bottom News Ticker Settings -->
+            <!-- 4. Bottom News Ticker Settings -->
             <div class="space-y-2.5">
                 <label class="block text-xs font-extrabold uppercase tracking-wider text-[#1B2A4A]">
-                    3. Bottom News Ticker Notices
+                    4. Bottom News Ticker Notices
                 </label>
                 <div class="space-y-2">
                     <label class="block text-[11px] font-bold text-slate-600">Ticker Badge Label</label>
@@ -424,10 +471,10 @@
 
             <hr class="border-slate-200">
 
-            <!-- 4. Sidebar Upcoming Events & QR Code -->
+            <!-- 5. Sidebar Upcoming Events & QR Code -->
             <div class="space-y-3">
                 <label class="block text-xs font-extrabold uppercase tracking-wider text-[#1B2A4A]">
-                    4. Sidebar Notices &amp; QR Code Destination
+                    5. Sidebar Notices &amp; QR Code Destination
                 </label>
                 <div class="space-y-1">
                     <label class="block text-[11px] font-bold text-slate-600">QR Code Target URL</label>
@@ -447,6 +494,22 @@
                     <label class="block text-[11px] font-bold text-slate-600">Upcoming Events (Title | Time/Details — one per line)</label>
                     <textarea id="input-events-lines" rows="3" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#4A90D9]"></textarea>
                 </div>
+            </div>
+
+            <hr class="border-slate-200">
+
+            <!-- 6. Export Baked HTML for GitHub Pages / TV Deployment -->
+            <div class="space-y-2 bg-blue-50/80 p-3.5 rounded-xl border border-blue-200">
+                <label class="block text-xs font-extrabold uppercase tracking-wider text-[#1B2A4A]">
+                    6. Publish Live to GitHub Pages / TV Screens
+                </label>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Download a ready-to-upload <code class="bg-white px-1 rounded border border-blue-200">index.html</code> with your uploaded logo and settings baked permanently into the file.
+                </p>
+                <button type="button" onclick="exportConfiguredHtml()" class="w-full py-2 px-3 bg-[#4A90D9] hover:bg-[#3b7ec4] text-white font-extrabold rounded-lg text-xs shadow-sm transition-colors flex items-center justify-center space-x-2">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Download Updated index.html</span>
+                </button>
             </div>
 
         </div>
@@ -470,144 +533,32 @@
 
     <script>
         // =========================================================================
-        // 1. SITE CONFIGURATION & DEFAULT CONTENT DATA
+        // 2. APPLICATION STATE & LOCALSTORAGE PERSISTENCE
         // =========================================================================
-        const SITE_PRESETS = {
-            'harolds-cross': {
-                name: "Harold’s Cross",
-                weatherLabel: "Dublin 6W",
-                lat: 53.3269,
-                lon: -6.2797,
-                visitorInfo: [
-                    { icon: "coffee", label: "The Cedar Café", value: "Open Mon–Fri 8:30am – 4:30pm | Sat–Sun 10:00am – 4:00pm" },
-                    { icon: "wifi", label: "Free Guest Wi-Fi", value: "Network: OLH-Guest (No password required)" },
-                    { icon: "heart-handshake", label: "Chapel & Quiet Room", value: "Open 24 hours for families, patients & visitors" }
-                ],
-                defaultEvents: [
-                    { title: "Light Up A Life Ceremony", detail: "Sunday 6th Dec • 4:15pm • Harold’s Cross Campus & Online" },
-                    { title: "Bereavement Grief Café", detail: "First Thursday of every month • 10:30am – 12:00pm" },
-                    { title: "Christmas Cards & Brooches", detail: "Available now at Main Reception & lightupalife.ie" }
-                ]
-            },
-            'blackrock': {
-                name: "Blackrock",
-                weatherLabel: "Blackrock, Co. Dublin",
-                lat: 53.3015,
-                lon: -6.1778,
-                visitorInfo: [
-                    { icon: "coffee", label: "Visitor Refreshments", value: "Tea & coffee facilities available in the Family Lounge" },
-                    { icon: "wifi", label: "Free Guest Wi-Fi", value: "Network: OLH-Guest (Accept terms on connect)" },
-                    { icon: "car", label: "Visitor Parking", value: "Designated spaces available at Sweetman’s Avenue entrance" }
-                ],
-                defaultEvents: [
-                    { title: "Light Up A Life 2026", detail: "Sponsor a light in memory of a loved one at lightupalife.ie" },
-                    { title: "Blackrock Grief Café", detail: "Monthly community drop-in • Contact Social Work team" },
-                    { title: "Bereaved Children’s Week", detail: "16th–22nd Nov • Resources available at Reception" }
-                ]
-            },
-            'wicklow': {
-                name: "Wicklow",
-                weatherLabel: "Magheramore, Wicklow",
-                lat: 52.9364,
-                lon: -6.0264,
-                visitorInfo: [
-                    { icon: "coffee", label: "Family & Visitor Hub", value: "Refreshments available daily in the Reception Lounge" },
-                    { icon: "wifi", label: "Free Guest Wi-Fi", value: "Network: OLH-Guest (No password required)" },
-                    { icon: "sun", label: "Sanctuary Gardens", value: "Accessible coastal & garden walkways open to visitors" }
-                ],
-                defaultEvents: [
-                    { title: "Bereaved Children’s Stand", detail: "Visit Eimear & Grainne in Reception this week (16–22 Nov)" },
-                    { title: "Light Up A Life 2026", detail: "Dedicate a light online at lightupalife.ie" },
-                    { title: "Wicklow Community Care", detail: "Supporting patients & families across County Wicklow" }
-                ]
-            }
-        };
+        const STORAGE_KEY = 'olh_signage_config_v2';
 
-        // Built-in 4-Slide Broadcast Presentation Deck
-        const DEMO_SLIDES = [
-            {
-                badge: "Flagship Campaign",
-                lowerThird: "Light Up A Life 2026 — Remembrance Ceremony on Sunday 6th December at 4:15pm",
-                bgGradient: "from-[#1B2A4A] via-[#223660] to-[#111C33]",
-                accentColor: "#D83A76",
-                tag: "Sunday 6th December • 4:15pm",
-                title: "Light Up A Life 2026",
-                subtitle: "Shine a light for someone special this Christmas. Join us in Harold’s Cross or watch live online from anywhere in the world.",
-                cta: "Sponsor a light today at lightupalife.ie",
-                icon: "sparkles"
-            },
-            {
-                badge: "National Awareness Week",
-                lowerThird: "Bereaved Children’s Awareness Week (16th–22nd Nov) — Be informed. Be yourself. Be there.",
-                bgGradient: "from-[#1E3A5F] via-[#2A5282] to-[#1B2A4A]",
-                accentColor: "#4A90D9",
-                tag: "16th – 22nd November 2026",
-                title: "“Children grieve too, so what can you do?”",
-                subtitle: "You don’t need the perfect words or all the answers. By understanding children’s grief, we can support young people through presence, honest communication, and care.",
-                cta: "Pick up a free guide at our Reception Awareness Stand",
-                icon: "heart"
-            },
-            {
-                badge: "Christmas Fundraising",
-                lowerThird: "Support Our Care — Christmas Cards & Commemorative Brooches now available at Reception",
-                bgGradient: "from-[#4A1936] via-[#7A2352] to-[#1B2A4A]",
-                accentColor: "#D83A76",
-                tag: "Every Euro Supports Patient Care",
-                title: "Christmas Cards & Remembrance Brooches",
-                subtitle: "Send meaningful festive greetings or wear our commemorative brooch in honour of a loved one while supporting specialist palliative care.",
-                cta: "Available at Reception & online at lightupalife.ie",
-                icon: "gift"
-            },
-            {
-                badge: "Our People & Community",
-                lowerThird: "Join Our Team — Explore nursing, clinical, support & volunteering roles at olh.ie/careers",
-                bgGradient: "from-[#1B2A4A] via-[#24436E] to-[#19355C]",
-                accentColor: "#4A90D9",
-                tag: "Harold’s Cross • Blackrock • Wicklow",
-                title: "Compassionate Care, Every Day",
-                subtitle: "Our dedicated clinical teams, staff, and volunteers work together to provide comfort, dignity, and expert care for patients and families.",
-                cta: "Discover careers & volunteering at olh.ie",
-                icon: "users"
-            }
-        ];
-
-        const DEFAULT_TICKER_LINES = [
-            "LIGHT UP A LIFE 2026: Join our Remembrance Ceremony on Sunday 6th December at 4:15pm in Harold’s Cross or online at lightupalife.ie",
-            "BEREAVED CHILDREN’S AWARENESS WEEK (16th–22nd Nov): Be informed. Be yourself. Be there. Visit our reception information stands for family resources.",
-            "CHRISTMAS APPEAL: 2026 Christmas Cards and Commemorative Brooches are available now at Main Reception.",
-            "VISITOR NOTICE: Please remember to use the hand sanitising stations located at all ward and reception entrances. Thank you for helping keep our patients safe."
-        ];
-
-        // =========================================================================
-        // 2. APPLICATION STATE & CLOUD SYNC PERSISTENCE
-        // =========================================================================
-        const STORAGE_KEY = 'olh_signage_config_v1';
-
-        let appState = {
+        // Baked-in default configuration (updated automatically when exporting index.html)
+        const BAKED_DEFAULT_CONFIG = /*BAKED_CONFIG_START*/{
             site: 'harolds-cross',
+            logoSrc: '',
+            logoSize: 'md',
             embedUrl: '',
             tickerBadge: 'Hospice Updates',
             tickerLines: [...DEFAULT_TICKER_LINES],
             qrUrl: 'https://lightupalife.ie?utm_source=onsite_screens',
             qrHeadline: 'Sponsor a Light Online',
             qrBadge: 'Light Up A Life',
-            customEvents: null, // null means use site preset defaults
-            cloudFeedUrl: ''
-        };
+            customEvents: null
+        }/*BAKED_CONFIG_END*/;
+
+        let appState = { ...BAKED_DEFAULT_CONFIG };
 
         function loadState() {
             try {
-                // Check if site is passed via URL parameter (e.g. ?site=wicklow) for multi-screen deployment
-                const urlParams = new URLSearchParams(window.location.search);
-                const urlSite = urlParams.get('site');
-                if (urlSite && SITE_PRESETS[urlSite]) {
-                    appState.site = urlSite;
-                }
-
                 const saved = localStorage.getItem(STORAGE_KEY);
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    appState = { ...appState, ...parsed };
+                    appState = { ...BAKED_DEFAULT_CONFIG, ...parsed };
                 }
             } catch (e) {
                 console.warn('Could not load saved signage state:', e);
@@ -715,7 +666,7 @@
         let currentSlideIndex = 0;
         let isPlaying = true;
         let slideTimer = null;
-        const SLIDE_INTERVAL_MS = 8000;
+        const SLIDE_INTERVAL_MS = 12000;
 
         function renderStage() {
             const demoContainer = document.getElementById('demo-slideshow');
@@ -855,9 +806,54 @@
         }
 
         // =========================================================================
-        // 6. SIDEBAR, QR CODE & TICKER RENDERING
+        // 6. SIDEBAR, LOGO, QR CODE & TICKER RENDERING
         // =========================================================================
+        function renderHeaderLogo() {
+            const imgEl = document.getElementById('header-custom-logo');
+            const fallbackEl = document.getElementById('header-fallback-logo');
+            const removeBtn = document.getElementById('btn-remove-logo');
+
+            const sizeClasses = {
+                sm: 'h-6',
+                md: 'h-8',
+                lg: 'h-10'
+            };
+
+            // Reset height classes
+            imgEl.classList.remove('h-6', 'h-8', 'h-10');
+            imgEl.classList.add(sizeClasses[appState.logoSize] || 'h-8');
+
+            // Highlight active size button in drawer
+            document.querySelectorAll('.logo-size-btn').forEach(btn => {
+                btn.classList.remove('bg-[#1B2A4A]', 'text-white', 'border-[#1B2A4A]');
+                btn.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
+            });
+            const activeSizeBtn = document.getElementById(`btn-logo-size-${appState.logoSize || 'md'}`);
+            if (activeSizeBtn) {
+                activeSizeBtn.classList.add('bg-[#1B2A4A]', 'text-white', 'border-[#1B2A4A]');
+                activeSizeBtn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
+            }
+
+            if (appState.logoSrc && appState.logoSrc.trim() !== '') {
+                imgEl.src = appState.logoSrc.trim();
+                imgEl.classList.remove('hidden');
+                fallbackEl.classList.add('hidden');
+                if (removeBtn) removeBtn.classList.remove('hidden');
+
+                imgEl.onerror = () => {
+                    imgEl.classList.add('hidden');
+                    fallbackEl.classList.remove('hidden');
+                };
+            } else {
+                imgEl.src = '';
+                imgEl.classList.add('hidden');
+                fallbackEl.classList.remove('hidden');
+                if (removeBtn) removeBtn.classList.add('hidden');
+            }
+        }
+
         function renderSidebarAndTicker() {
+            renderHeaderLogo();
             const preset = SITE_PRESETS[appState.site] || SITE_PRESETS['harolds-cross'];
 
             // Update Top Header Site Pill & Buttons
@@ -975,25 +971,45 @@
 
             if (isClosed) {
                 // Populate inputs with current state
-                document.getElementById('input-cloud-feed-url').value = appState.cloudFeedUrl || '';
+                document.getElementById('input-logo-url').value = appState.logoSrc || '';
                 document.getElementById('input-embed-url').value = appState.embedUrl || '';
                 document.getElementById('input-ticker-badge').value = appState.tickerBadge || 'Hospice Updates';
                 document.getElementById('input-ticker-lines').value = (appState.tickerLines || DEFAULT_TICKER_LINES).join('\n');
-                document.getElementById('input-qr-url').value = appState.qrUrl || 'https://lightupalife.ie';
-                document.getElementById('input-qr-headline').value = appState.qrHeadline || 'Sponsor a Light Online';
-                document.getElementById('input-qr-badge').value = appState.qrBadge || 'Light Up A Life';
+        function handleLogoFileUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
 
-                const currentEvents = (appState.customEvents && appState.customEvents.length > 0)
-                    ? appState.customEvents
-                    : SITE_PRESETS[appState.site].defaultEvents;
-                document.getElementById('input-events-lines').value = currentEvents.map(e => `${e.title} | ${e.detail}`).join('\n');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                appState.logoSrc = dataUrl;
+                document.getElementById('input-logo-url').value = dataUrl;
+                saveState();
+                renderHeaderLogo();
+                showToast('Logo uploaded to top-left header');
+            };
+            reader.readAsDataURL(file);
+        }
 
-                backdrop.classList.remove('hidden');
-                drawer.classList.remove('translate-x-full');
-            } else {
-                backdrop.classList.add('hidden');
-                drawer.classList.add('translate-x-full');
-            }
+        function previewLogoUrlInput() {
+            const val = document.getElementById('input-logo-url').value.trim();
+            appState.logoSrc = val;
+            renderHeaderLogo();
+        }
+
+        function setLogoSize(sizeKey) {
+            appState.logoSize = sizeKey;
+            saveState();
+            renderHeaderLogo();
+        }
+
+        function removeCustomLogo() {
+            appState.logoSrc = '';
+            document.getElementById('input-logo-url').value = '';
+            document.getElementById('input-logo-file').value = '';
+            saveState();
+            renderHeaderLogo();
+            showToast('Custom logo removed');
         }
 
         function applyEmbedUrl() {
@@ -1001,7 +1017,7 @@
             appState.embedUrl = urlVal;
             saveState();
             renderStage();
-            showToast(urlVal ? 'Live presentation embed loaded' : 'Switched to built-in slides');
+            showToast(urlVal ? 'Live presentation embed loaded' : 'Switched to 12-second slides');
         }
 
         function clearEmbedUrl() {
@@ -1009,11 +1025,11 @@
             appState.embedUrl = '';
             saveState();
             renderStage();
-            showToast('Switched back to built-in campaign slides');
+            showToast('Switched back to 12-second campaign slides');
         }
 
         function saveSettingsFromDrawer() {
-            appState.cloudFeedUrl = document.getElementById('input-cloud-feed-url').value.trim();
+            appState.logoSrc = document.getElementById('input-logo-url').value.trim();
             appState.embedUrl = document.getElementById('input-embed-url').value.trim();
             appState.tickerBadge = document.getElementById('input-ticker-badge').value.trim() || 'Hospice Updates';
             
@@ -1049,22 +1065,59 @@
 
         function resetToDefaults() {
             localStorage.removeItem(STORAGE_KEY);
-            appState = {
-                site: 'harolds-cross',
-                embedUrl: '',
-                tickerBadge: 'Hospice Updates',
-                tickerLines: [...DEFAULT_TICKER_LINES],
-                qrUrl: 'https://lightupalife.ie?utm_source=onsite_screens',
-                qrHeadline: 'Sponsor a Light Online',
-                qrBadge: 'Light Up A Life',
-                customEvents: null,
-                cloudFeedUrl: ''
-            };
+            appState = { ...BAKED_DEFAULT_CONFIG };
             renderStage();
             renderSidebarAndTicker();
             fetchLiveWeather();
             toggleEditor();
             showToast('Reset to default hospice broadcast settings');
+        }
+
+        function exportConfiguredHtml() {
+            try {
+                // Capture current live DOM HTML and bake appState directly into BAKED_DEFAULT_CONFIG
+                const docClone = document.documentElement.cloneNode(true);
+                // Ensure drawer is closed in exported file
+                const clonedDrawer = docClone.querySelector('#editor-drawer');
+                const clonedBackdrop = docClone.querySelector('#editor-backdrop');
+                if (clonedDrawer) clonedDrawer.classList.add('translate-x-full');
+                if (clonedBackdrop) clonedBackdrop.classList.add('hidden');
+
+                let htmlString = '<!DOCTYPE html>\n' + docClone.outerHTML;
+                const serializedConfig = JSON.stringify(appState, null, 4);
+                htmlString = htmlString.replace(
+                    /\/\*BAKED_CONFIG_START\*\/[\s\S]*?\/\*BAKED_CONFIG_END\*\//,
+                    `/*BAKED_CONFIG_START*/${serializedConfig}/*BAKED_CONFIG_END*/`
+                );
+
+                const blob = new Blob([htmlString], { type: 'text/html;charset=utf-8' });
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = 'index.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+
+                showToast('Downloaded updated index.html ready for GitHub');
+            } catch (err) {
+                console.error('Export failed:', err);
+                showToast('Could not export HTML file');
+            }
+        }
+
+        // Auto-hide kiosk UI controls after 5 seconds of mouse inactivity
+        let idleTimeout = null;
+        function resetIdleTimer() {
+            document.body.classList.remove('is-idle');
+            clearTimeout(idleTimeout);
+            idleTimeout = setTimeout(() => {
+                const drawerOpen = !document.getElementById('editor-drawer').classList.contains('translate-x-full');
+                if (!drawerOpen) {
+                    document.body.classList.add('is-idle');
+                }
+            }, 5000);
         }
 
         function toggleFullScreen() {
@@ -1102,10 +1155,11 @@
             // Refresh weather every 15 minutes
             setInterval(fetchLiveWeather, 15 * 60 * 1000);
 
-            // If a cloud feed is saved, auto-sync every 30 minutes
-            if (appState.cloudFeedUrl) {
-                setInterval(syncCloudFeedNow, 30 * 60 * 1000);
-            }
+            // Track mouse movement to auto-hide kiosk controls cleanly
+            window.addEventListener('mousemove', resetIdleTimer);
+            window.addEventListener('mousedown', resetIdleTimer);
+            window.addEventListener('touchstart', resetIdleTimer);
+            resetIdleTimer();
 
             lucide.createIcons();
         };
